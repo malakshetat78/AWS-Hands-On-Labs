@@ -18,30 +18,69 @@ The support groups use managed read-only policies. The **EC2-Admin** group uses 
 
 ## Configure and inspect group membership
 
-1. Open **IAM → User groups** and review the three preconfigured groups and their policies.
-2. Add `user-1` to **S3-Support**, `user-2` to **EC2-Support**, and `user-3` to **EC2-Admin**. Confirm membership on each group's **Users** tab.
-3. Open the IAM sign-in page in a private browser window. Sign in with the lab-provided credentials and switch users between tests.
+### Review the IAM groups
 
-[Group list](screenshots/01-iam-groups.jpg) · [Add user](screenshots/02-add-user-to-group.jpg) · [S3-Support membership](screenshots/03-s3-support-membership.jpg) · [EC2-Support membership](screenshots/04-ec2-support-membership.jpg) · [IAM sign-in](screenshots/05-iam-sign-in.jpg) · [IAM dashboard](screenshots/06-iam-dashboard.jpg)
+Open **IAM → User groups** to review the three preconfigured groups and inspect their policies.
+
+![IAM user groups showing EC2-Admin, EC2-Support, and S3-Support](screenshots/01-iam-groups.jpg)
+
+### Add users to their groups
+
+On the **S3-Support** group's **Users** tab, choose **Add users**, select `user-1`, and confirm the assignment. Repeat for `user-2` in **EC2-Support** and `user-3` in **EC2-Admin**.
+
+![Add users dialog with user-1 selected for S3-Support](screenshots/02-add-user-to-group.jpg)
+
+Confirm each assignment on the group's **Users** tab. The screenshots show `user-1` in **S3-Support** and `user-2` in **EC2-Support**.
+
+![S3-Support group membership showing user-1](screenshots/03-s3-support-membership.jpg)
+
+![EC2-Support group membership showing user-2](screenshots/04-ec2-support-membership.jpg)
+
+### Sign in as a lab user
+
+Open the IAM user sign-in page in a private browser window. Use the lab-provided sign-in details and sign out between user tests.
+
+![IAM user sign-in form for user-1, with account and password fields redacted](screenshots/05-iam-sign-in.jpg)
+
+The IAM dashboard summarizes the account's IAM resources and shows where to find the IAM user sign-in URL.
+
+![IAM dashboard with the account ID and sign-in URL redacted](screenshots/06-iam-dashboard.jpg)
 
 ## Verify permissions
 
-| Test | Expected result | Evidence |
-| --- | --- | --- |
-| Open Amazon S3 as `user-1` | Read-only access | [Group membership](screenshots/03-s3-support-membership.jpg) |
-| View EC2 instances as `user-2` in N. Virginia | Instances are visible | [EC2 stop dialog](screenshots/08-stop-instance-attempt.jpg) |
-| Submit the stop request as `user-2` | AWS denies `ec2:StopInstances` | [Denied stop request](screenshots/09-ec2-stop-denied.jpg) |
-| Stop **LabHost** as `user-3` in N. Virginia | **LabHost** reaches **Stopped** and **Bastion Host** stays **Running** | [Stop confirmation](screenshots/10-admin-stop-instance.jpg) · [Stopping](screenshots/11-instance-stopping.jpg) · [Stopped](screenshots/12-instance-stopped.jpg) |
+### S3-Support read-only access
 
-The S3 screenshot documents group membership. The EC2 screenshots capture the actual authorization results. AWS evaluated the support user's stop request when it was submitted, even though the console let the user open the stop dialog.
+Sign in as `user-1` and open **Amazon S3** to check read-only access. The S3 evidence above shows the group assignment.
 
-![EC2 console after LabHost reached Stopped](screenshots/12-instance-stopped.jpg)
+### Regional SCP denial
 
-## Troubleshoot the regional SCP denial
+An EC2 instance listing request outside the lab's supported Region was denied by an AWS Organizations service control policy (SCP). An explicit SCP deny takes precedence over an IAM allow. Switching to **N. Virginia (`us-east-1`)** allowed the EC2 tests to proceed.
 
-An EC2 listing request made outside the lab's supported Region was denied by an AWS Organizations service control policy (SCP). Switching to **N. Virginia (`us-east-1`)** allowed the EC2 tests to proceed. An explicit SCP deny takes precedence over an IAM allow. The later stop denial in the correct Region had a different cause: the support user's identity policy did not allow `ec2:StopInstances`.
+![EC2 instance listing error from the regional SCP denial](screenshots/07-scp-access-denied.jpg)
 
-[Regional EC2 access error](screenshots/07-scp-access-denied.jpg)
+### EC2-Support stop request denied
+
+As `user-2` in **N. Virginia**, open **EC2 → Instances**, select **LabHost**, and choose **Instance state → Stop instance**. The console opens the confirmation dialog.
+
+![EC2 stop confirmation dialog opened during the support user test](screenshots/08-stop-instance-attempt.jpg)
+
+After submission, AWS denies the request because the support user's identity policy does not allow `ec2:StopInstances`.
+
+![EC2 authorization error after the support user submits the stop request](screenshots/09-ec2-stop-denied.jpg)
+
+### EC2-Admin stop request succeeds
+
+Sign in as `user-3`, return to **N. Virginia**, and submit the stop request for **LabHost**.
+
+![Stop instance confirmation for the EC2 Admin test](screenshots/10-admin-stop-instance.jpg)
+
+EC2 accepts the request and shows **LabHost** as **Stopping**.
+
+![EC2 instance list showing LabHost in the Stopping state](screenshots/11-instance-stopping.jpg)
+
+The final instance list shows **LabHost** as **Stopped** and **Bastion Host** as **Running**.
+
+![EC2 instance list showing LabHost stopped and Bastion Host running](screenshots/12-instance-stopped.jpg)
 
 ## Security takeaways
 
