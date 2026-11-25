@@ -10,6 +10,7 @@ Each lab includes its objective, implementation workflow, screenshots, validatio
 | --- | --- | --- |
 | 01 | [IAM Administrator & Billing Access](01-IAM-Administrator-Billing-Access/README.md) | IAM users, `AdministratorAccess`, account-level billing access, verification |
 | 02 | [AWS IAM Users, Groups, and Access Control](Lab-02-AWS-IAM/README.md) | IAM groups, least privilege, EC2 access testing, SCP troubleshooting |
+| 03 | [Build a VPC and Launch a Web Server](Lab-03-VPC-Web-Server/README.md) | VPC, public and private subnets, route tables, security groups, EC2 |
 
 ## Documentation Format
 
