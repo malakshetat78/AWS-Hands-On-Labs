@@ -12,6 +12,7 @@ Each lab includes its objective, implementation workflow, screenshots, validatio
 | 02 | [AWS IAM Users, Groups, and Access Control](Lab-02-AWS-IAM/README.md) | IAM groups, least privilege, EC2 access testing, SCP troubleshooting |
 | 03 | [Build a VPC and Launch a Web Server](Lab-03-VPC-Web-Server/README.md) | VPC, public and private subnets, route tables, security groups, EC2 |
 | 06 | [Elastic Load Balancing and EC2 Auto Scaling](Lab-06-Elastic-Load-Balancing-and-Auto-Scaling/README.md) | AMIs, Application Load Balancer, target health, launch templates, Auto Scaling, CloudWatch |
+| 07 | [AWS Lambda Scheduled EC2 Stop](Lab-07-AWS-Lambda-EC2-Stop-Automation/README.md) | Lambda, Python, EventBridge, boto3, EC2, CloudWatch |
 
 ## Documentation Format
 
